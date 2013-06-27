@@ -1,0 +1,124 @@
+<pre><span class=hs-linenum>2: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Loop</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>3: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-varop'>!!</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-varid'>length</span><span class='hs-layout'>)</span>
+<span class=hs-linenum>4: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Set</span>
+<span class=hs-linenum>5: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>SimpleRefinements</span>
+</pre>
+
+<h2 id="higher-order-specifications">Higher Order Specifications</h2>
+<p>Consider a <code>loop</code> function:</p>
+<pre><span class=hs-linenum>13: </span><span class='hs-definition'>loop</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>14: </span><a class=annot href="#"><span class=annottext>forall a.
+lo:{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; hi:(GHC.Types.Int)
+-&gt; a
+-&gt; ({VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi)}
+    -&gt; a -&gt; a)
+-&gt; a</span><span class='hs-definition'>loop</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>lo</span></a> <a class=annot href="#"><span class=annottext>(GHC.Types.Int)</span><span class='hs-varid'>hi</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>base</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi)}
+-&gt; a -&gt; a</span><span class='hs-varid'>f</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; (VV == lo) &amp;&amp; (VV == (lo + lo)) &amp;&amp; (VV == (hi - hi)) &amp;&amp; (VV == (lo - lo)) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; {VV : a | (VV == base)} -&gt; a</span><span class='hs-varid'>go</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; (VV == lo) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>lo</span></a> <a class=annot href="#"><span class=annottext>{VV : a | (VV == base)}</span><span class='hs-varid'>base</span></a>
+<span class=hs-linenum>15: </span>  <span class='hs-keyword'>where</span> <a class=annot href="#"><span class=annottext>forall a.
+lo:{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; (VV == lo) &amp;&amp; (VV == (lo + lo)) &amp;&amp; (VV == (hi - hi)) &amp;&amp; (VV == (lo - lo)) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; hi:{VV : (GHC.Types.Int) | (VV == hi) &amp;&amp; (VV == (hi + lo)) &amp;&amp; (VV == (hi + lo)) &amp;&amp; (VV == (lo + hi)) &amp;&amp; (VV == (lo + hi)) &amp;&amp; (VV == (hi - lo)) &amp;&amp; (VV == (hi - lo))}
+-&gt; {VV : a | (VV == base)}
+-&gt; ({VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi) &amp;&amp; (VV &lt; hi)}
+    -&gt; a -&gt; a)
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}
+-&gt; a
+-&gt; a</span><span class='hs-varid'>go</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>acc</span></a> <span class='hs-keyglyph'>|</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int)
+-&gt; {VV : (GHC.Types.Bool) | (((Prop VV)) &lt;=&gt; (x &lt; y))}</span><span class='hs-varop'>&lt;</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == hi) &amp;&amp; (VV == hi) &amp;&amp; (VV == (hi + lo)) &amp;&amp; (VV == (hi + lo)) &amp;&amp; (VV == (lo + hi)) &amp;&amp; (VV == (lo + hi)) &amp;&amp; (VV == (hi - lo)) &amp;&amp; (VV == (hi - lo))}</span><span class='hs-varid'>hi</span></a>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall a.
+lo:{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; (VV == lo) &amp;&amp; (VV == (lo + lo)) &amp;&amp; (VV == (hi - hi)) &amp;&amp; (VV == (lo - lo)) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; hi:{VV : (GHC.Types.Int) | (VV == hi) &amp;&amp; (VV == (hi + lo)) &amp;&amp; (VV == (hi + lo)) &amp;&amp; (VV == (lo + hi)) &amp;&amp; (VV == (lo + hi)) &amp;&amp; (VV == (hi - lo)) &amp;&amp; (VV == (hi - lo))}
+-&gt; {VV : a | (VV == base)}
+-&gt; ({VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi) &amp;&amp; (VV &lt; hi)}
+    -&gt; a -&gt; a)
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}
+-&gt; a
+-&gt; a</span><span class='hs-varid'>go</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}</span><span class='hs-varid'>i</span></a><a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (1  :  int))}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi) &amp;&amp; (VV &lt; hi)}
+-&gt; a -&gt; a</span><span class='hs-varid'>f</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>{VV : a | (VV == acc)}</span><span class='hs-varid'>acc</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum>16: </span>                 <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{VV : a | (VV == acc)}</span><span class='hs-varid'>acc</span></a>
+</pre>
+
+<p>We can use <code>(!!)</code> to write a function that adds the elements of a list of <code>Nat</code>s:</p>
+<pre><span class=hs-linenum>21: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>listNatSum</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>L</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>22: </span><span class='hs-definition'>listNatSum</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>L</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>23: </span><a class=annot href="#"><span class=annottext>(SimpleRefinements.L {VV : (GHC.Types.Int) | (VV &gt;= 0)})
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-definition'>listNatSum</span></a> <a class=annot href="#"><span class=annottext>(SimpleRefinements.L {VV : (GHC.Types.Int) | (VV &gt;= 0)})</span><span class='hs-varid'>xs</span></a>  <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>lo:{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; hi:(GHC.Types.Int)
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; ({VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi)}
+    -&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0)}
+    -&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0)})
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>loop</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == n) &amp;&amp; (VV == (llen xs))}</span><span class='hs-varid'>n</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; n)}
+-&gt; acc:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= acc)}</span><span class='hs-varid'>body</span></a> 
+<span class=hs-linenum>24: </span>  <span class='hs-keyword'>where</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; n)}
+-&gt; acc:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= acc)}</span><span class='hs-varid'>body</span></a>   <span class='hs-keyglyph'>=</span> <span class='hs-keyglyph'>\</span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; n)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>acc</span></a> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == acc) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>acc</span></a> <a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L {VV : (GHC.Types.Int) | (VV &gt;= 0)}) | (VV == xs)}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>ls:(SimpleRefinements.L {VV : (GHC.Types.Int) | (VV &gt;= 0)})
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; (llen ls))}
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varop'>!!</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &lt; n)}</span><span class='hs-varid'>i</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum>25: </span>        <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (llen xs))}</span><span class='hs-varid'>n</span></a>      <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>xs:(SimpleRefinements.L {VV : (GHC.Types.Int) | (VV &gt;= 0)})
+-&gt; {VV : (GHC.Types.Int) | (VV == (llen xs))}</span><span class='hs-varid'>length</span></a> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L {VV : (GHC.Types.Int) | (VV &gt;= 0)}) | (VV == xs)}</span><span class='hs-varid'>xs</span></a>
+</pre>
+<p>We note that <code>0 &lt;= i &lt; llen xs</code> which makes indexing safe. Also, <code>(+) :: Nat -&gt; Nat -&gt; Nat</code> and the function is safe, as in <code>loop</code>'s type <code>a</code> is instantiated with <code>Nat</code> getting:</p>
+<p><code>loop :: Int -&gt; Int -&gt; Nat -&gt; (Int -&gt; Nat -&gt; Nat) -&gt; Nat</code></p>
+<p>We use the same code to add the elements of an <code>Even</code> list.</p>
+<pre><span class=hs-linenum>35: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>listEvenSum</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>L</span> <span class='hs-conid'>Even</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Even</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>36: </span><span class='hs-definition'>listEvenSum</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>L</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>37: </span><a class=annot href="#"><span class=annottext>(SimpleRefinements.L {VV : (GHC.Types.Int) | ((VV mod 2) == 0)})
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}</span><span class='hs-definition'>listEvenSum</span></a> <a class=annot href="#"><span class=annottext>(SimpleRefinements.L {VV : (GHC.Types.Int) | ((VV mod 2) == 0)})</span><span class='hs-varid'>xs</span></a>  <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>lo:{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; hi:(GHC.Types.Int)
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}
+-&gt; ({VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi)}
+    -&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}
+    -&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)})
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}</span><span class='hs-varid'>loop</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == n) &amp;&amp; (VV == (llen xs))}</span><span class='hs-varid'>n</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; n)}
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}</span><span class='hs-varid'>body</span></a> 
+<span class=hs-linenum>38: </span>  <span class='hs-keyword'>where</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; n)}
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}</span><span class='hs-varid'>body</span></a>   <span class='hs-keyglyph'>=</span> <span class='hs-keyglyph'>\</span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; n)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((VV mod 2) == 0)}</span><span class='hs-varid'>acc</span></a> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == acc) &amp;&amp; ((VV mod 2) == 0)}</span><span class='hs-varid'>acc</span></a> <a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}) | (VV == xs)}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>ls:(SimpleRefinements.L {VV : (GHC.Types.Int) | ((VV mod 2) == 0)})
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; (llen ls))}
+-&gt; {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}</span><span class='hs-varop'>!!</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &lt; n)}</span><span class='hs-varid'>i</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum>39: </span>        <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (llen xs))}</span><span class='hs-varid'>n</span></a>      <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>xs:(SimpleRefinements.L {VV : (GHC.Types.Int) | ((VV mod 2) == 0)})
+-&gt; {VV : (GHC.Types.Int) | (VV == (llen xs))}</span><span class='hs-varid'>length</span></a> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L {VV : (GHC.Types.Int) | ((VV mod 2) == 0)}) | (VV == xs)}</span><span class='hs-varid'>xs</span></a>
+</pre>
+
+<p>With the same reasoning, <code>(+) :: Even -&gt; Even -&gt; Even</code> and the function is safe, as in <code>loop</code>'s type <code>a</code> is instantiated with <code>Even</code> getting</p>
+<p><code>loop :: Int -&gt; Int -&gt; Even -&gt; (Int -&gt; Even -&gt; Even) -&gt; Even</code></p>
+<h2 id="another-example">Another Example</h2>
+<p>Consinder a simpler example:</p>
+<pre><span class=hs-linenum>52: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>add</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>n</span><span class='hs-conop'>:</span><span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>m</span><span class='hs-conop'>:</span><span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{v:</span><span class='hs-conid'>Int</span><span class='hs-keyword'>| v = m + n}</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>53: </span><span class='hs-definition'>add</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>54: </span><a class=annot href="#"><span class=annottext>n:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; m:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; {VV : (GHC.Types.Int) | (VV == (m + n))}</span><span class='hs-definition'>add</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>n</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>m</span></a> <span class='hs-keyglyph'>=</span> <span class=hs-error><a class=annot href="#"><span class=annottext>lo:{VV : (GHC.Types.Int) | (VV == 0) &amp;&amp; ((VV mod 2) == 0) &amp;&amp; (VV &gt;= 0)}
+-&gt; hi:(GHC.Types.Int)
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}
+-&gt; ({VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi)}
+    -&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}
+    -&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)})
+-&gt; {VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}</span><span class='hs-varid'>loop</span></a></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == m) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>m</span></a></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == n) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>n</span></a></span><span class=hs-error> </span><span class=hs-error><span class='hs-layout'>(</span></span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &lt; m)}
+-&gt; i:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}
+-&gt; {VV : (GHC.Types.Int) | (VV &gt; 0) &amp;&amp; (VV &gt; i) &amp;&amp; (VV &gt; n) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-keyglyph'>\</span></a></span><span class=hs-error><span class='hs-keyword'>_</span></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}</span><span class='hs-varid'>i</span></a></span><span class=hs-error> </span><span class=hs-error><span class='hs-keyglyph'>-&gt;</span></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}</span><span class='hs-varid'>i</span></a></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a></span><span class=hs-error> </span><span class=hs-error><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (1  :  int))}</span><span class='hs-num'>1</span></a></span><span class=hs-error><span class='hs-layout'>)</span></span>
+</pre>
+ 
+<p>We cannot use the same reasoning as before, as if we substitute <code>a</code> with <code>{v:Int|v = n + m}</code> in the <code>loop</code>'s type, we take an invalid type.</p>
+It turns out that the invariant we want <em>depends</em> on the index <code>i</code>. The loop invariant is
+<center>
+I(acc, i) &lt;=&gt; acc = i + n
+</center>
+
+And the result satisfies the invariant at <code>m</code>:
+<center>
+I(add n m , m) &lt;=&gt; add n m = m + n
+</center>
+
+<p>To prove <code>add</code> is safe we need to express <code>index dependent refinements</code>...</p>
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>

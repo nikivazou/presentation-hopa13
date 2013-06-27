@@ -1,0 +1,192 @@
+<pre><span class=hs-linenum>2: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Loop</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>3: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-varop'>!!</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-varid'>length</span><span class='hs-layout'>,</span> <span class='hs-layout'>(</span><span class='hs-varop'>++</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<span class=hs-linenum>4: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>SimpleRefinements</span>
+</pre>
+
+<h1 id="inductive-refinements">Inductive Refinements</h1>
+<p><em>The problem:</em> <code>add</code> does not typecheck, because the <code>loop</code> invariant <code>I</code> is <em>index dependent</em></p>
+<pre><span class=hs-linenum>13: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>add</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>n</span><span class='hs-conop'>:</span><span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>m</span><span class='hs-conop'>:</span><span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{v:</span><span class='hs-conid'>Int</span><span class='hs-keyword'>| v = m + n}</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>14: </span><span class='hs-definition'>add</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>15: </span><a class=annot href="#"><span class=annottext>n:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; m:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; {VV : (GHC.Types.Int) | (VV == (m + n))}</span><span class='hs-definition'>add</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>n</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>m</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall &lt;p :: (GHC.Types.Int)-&gt; (GHC.Types.Int)-&gt; Bool&gt;.
+lo:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; hi:{VV : (GHC.Types.Int) | (VV &gt;= lo)}
+-&gt; {VV : (GHC.Types.Int)&lt;p lo&gt; | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}
+-&gt; (i:(GHC.Types.Int)
+    -&gt; {VV : (GHC.Types.Int)&lt;p i&gt; | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}
+    -&gt; forall [ex:{VV : (GHC.Types.Int) | (VV == (i + 1))}].{VV : (GHC.Types.Int)&lt;p ex&gt; | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)})
+-&gt; {VV : (GHC.Types.Int)&lt;p hi&gt; | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}</span><span class='hs-varid'>loop</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == m) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>m</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == n) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>n</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>x1:(GHC.Types.Int)
+-&gt; i:{VV : (GHC.Types.Int) | (VV == (x1 + n)) &amp;&amp; (VV == (n + x1)) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= x1) &amp;&amp; (VV &gt;= n)}
+-&gt; {VV : (GHC.Types.Int) | (VV == (i + 1)) &amp;&amp; (VV &gt; 0) &amp;&amp; (VV &gt; x1) &amp;&amp; (VV &gt; i) &amp;&amp; (VV &gt; n) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= x1) &amp;&amp; (VV &gt;= n)}</span><span class='hs-keyglyph'>\</span></a><span class='hs-keyword'>_</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}</span><span class='hs-varid'>i</span></a> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= n)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (1  :  int))}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span>
+</pre>
+ 
+<p>Remember the <code>loop</code> function:</p>
+<pre><span class=hs-linenum>20: </span><span class='hs-definition'>loop</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>21: </span><a class=annot href="#"><span class=annottext>forall a &lt;p :: (GHC.Types.Int)-&gt; a-&gt; Bool&gt;.
+lo:{VV : (GHC.Types.Int) | (VV &gt;= 0)}
+-&gt; hi:{VV : (GHC.Types.Int) | (VV &gt;= lo)}
+-&gt; {VV : a&lt;p lo&gt; | true}
+-&gt; (i:(GHC.Types.Int)
+    -&gt; {VV : a&lt;p i&gt; | true}
+    -&gt; forall [ex:{VV : (GHC.Types.Int) | (VV == (i + 1))}].{VV : a&lt;p ex&gt; | true})
+-&gt; {VV : a&lt;p hi&gt; | true}</span><span class='hs-definition'>loop</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>lo</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= lo)}</span><span class='hs-varid'>hi</span></a> <a class=annot href="#"><span class=annottext>{VV : a | ((papp2 p VV lo))}</span><span class='hs-varid'>base</span></a> <a class=annot href="#"><span class=annottext>i:(GHC.Types.Int)
+-&gt; {VV : a | ((papp2 p VV i))}
+-&gt; forall [ex:{VV : (GHC.Types.Int) | (VV == (i + 1))}].{VV : a | ((papp2 p VV ex))}</span><span class='hs-varid'>f</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>x1:{VV : (GHC.Types.Int) | (VV == lo) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &lt;= hi)}
+-&gt; {VV : a | ((papp2 p VV lo)) &amp;&amp; ((papp2 p VV x1)) &amp;&amp; (VV == base)}
+-&gt; {VV : a | ((papp2 p VV hi))}</span><span class='hs-varid'>go</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == lo) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>lo</span></a> <a class=annot href="#"><span class=annottext>{VV : a | ((papp2 p VV lo)) &amp;&amp; (VV == base)}</span><span class='hs-varid'>base</span></a>
+<span class=hs-linenum>22: </span>  <span class='hs-keyword'>where</span> <a class=annot href="#"><span class=annottext>forall a.
+lo:{VV : (GHC.Types.Int) | (VV == lo) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &lt;= hi)}
+-&gt; hi:{VV : (GHC.Types.Int) | (VV == hi) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}
+-&gt; {VV : a | ((papp2 p VV lo)) &amp;&amp; ((papp2 p VV lo)) &amp;&amp; (VV == base)}
+-&gt; (x1:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi) &amp;&amp; (VV &lt; hi)}
+    -&gt; {VV : a | ((papp2 p VV x1))}
+    -&gt; {VV : a | ((papp2 p VV (x1 + 1)))})
+-&gt; i:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}
+-&gt; {VV : a | ((papp2 p VV i))}
+-&gt; {VV : a | ((papp2 p VV hi)) &amp;&amp; ((papp2 p VV hi))}</span><span class='hs-varid'>go</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>{VV : a | ((papp2 p VV i))}</span><span class='hs-varid'>acc</span></a> <span class='hs-keyglyph'>|</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>x:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= i) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}
+-&gt; y:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= i) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}
+-&gt; {VV : (GHC.Types.Bool) | (((Prop VV)) &lt;=&gt; (x &lt; y))}</span><span class='hs-varop'>&lt;</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == hi) &amp;&amp; (VV == hi) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}</span><span class='hs-varid'>hi</span></a>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall a.
+lo:{VV : (GHC.Types.Int) | (VV == lo) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &lt;= hi)}
+-&gt; hi:{VV : (GHC.Types.Int) | (VV == hi) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo)}
+-&gt; {VV : a | ((papp2 p VV lo)) &amp;&amp; ((papp2 p VV lo)) &amp;&amp; (VV == base)}
+-&gt; (x1:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi) &amp;&amp; (VV &lt; hi)}
+    -&gt; {VV : a | ((papp2 p VV x1))}
+    -&gt; {VV : a | ((papp2 p VV (x1 + 1)))})
+-&gt; i:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}
+-&gt; {VV : a | ((papp2 p VV i))}
+-&gt; {VV : a | ((papp2 p VV hi)) &amp;&amp; ((papp2 p VV hi))}</span><span class='hs-varid'>go</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}</span><span class='hs-varid'>i</span></a><a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (1  :  int))}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>x1:{VV : (GHC.Types.Int) | (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt; hi) &amp;&amp; (VV &lt; hi)}
+-&gt; {VV : a | ((papp2 p VV x1))}
+-&gt; {VV : a | ((papp2 p VV (x1 + 1)))}</span><span class='hs-varid'>f</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == i) &amp;&amp; (VV &gt;= 0) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &gt;= lo) &amp;&amp; (VV &lt;= hi) &amp;&amp; (VV &lt;= hi)}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>{VV : a | ((papp2 p VV i)) &amp;&amp; (VV == acc)}</span><span class='hs-varid'>acc</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum>23: </span>                 <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{VV : a | ((papp2 p VV i)) &amp;&amp; (VV == acc)}</span><span class='hs-varid'>acc</span></a>
+</pre>
+
+<p>Consinder the <code>loop</code>'s invariant that relates the index <code>i</code> with the accumulator <code>acc</code>:</p>
+<center>
+<code>I(acc, i)</code>
+</center>
+
+<p>To prove that the result satisfies the invariant at <code>hi</code>, by induction, we need to prove:</p>
+<ul>
+<li>The base case satisfies the invariant at low, or
+<center>
+<code>I(base, lo)</code>
+</center>
+</li>
+<li>The <code>f</code> inductively presernes the invariant, or
+<center>
+<code>if I(acc, i) then I(f (i + 1) acc, i+1)</code>
+</center>
+</li>
+</ul>
+We encode this reasoning using abstract refinements. The invariant <code>I(acc, i)</code> maps to a refinent on <code>acc</code> that depends on <code>i</code>, or
+<center> 
+I(acc, i) &lt;=&gt; <code>acc :: a &lt;p i&gt;</code>
+</center>
+
+<p>So, we type loop as:</p>
+<pre><span class=hs-linenum>46: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>loop</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>a</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Prop</span><span class='hs-varop'>&gt;.</span>
+<span class=hs-linenum>47: </span>             <span class='hs-varid'>lo</span><span class='hs-conop'>:</span><span class='hs-keyword'>{v:</span><span class='hs-conid'>Int</span><span class='hs-keyword'>|v&gt;=0}</span> 
+<span class=hs-linenum>48: </span>          <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>hi</span><span class='hs-conop'>:</span><span class='hs-keyword'>{v:</span><span class='hs-conid'>Int</span><span class='hs-keyword'>|v&gt;=lo}</span>
+<span class=hs-linenum>49: </span>          <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-varid'>lo</span><span class='hs-varop'>&gt;</span> 
+<span class=hs-linenum>50: </span>          <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>i</span><span class='hs-conop'>:</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-varid'>i</span><span class='hs-varop'>&gt;</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-layout'>(</span><span class='hs-varid'>i</span><span class='hs-varop'>+</span><span class='hs-num'>1</span><span class='hs-layout'>)</span><span class='hs-varop'>&gt;</span><span class='hs-layout'>)</span> 
+<span class=hs-linenum>51: </span>          <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-varid'>hi</span><span class='hs-varop'>&gt;</span>
+<span class=hs-linenum>52: </span>  <span class='hs-keyword'>@-}</span>
+</pre>
+
+Back to <code>add</code>:
+<pre><span class=hs-linenum>56: </span><span class='hs-definition'>add</span> <span class='hs-varid'>n</span> <span class='hs-varid'>m</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>loop</span> <span class='hs-num'>0</span> <span class='hs-varid'>m</span> <span class='hs-varid'>n</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>i</span> <span class='hs-varop'>+</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
+</pre>
+<p>The invariant is <code>I(acc, i) &lt;=&gt; acc = i + n</code> We can prove:</p>
+<ul>
+<li><p>The base case satisfies the invariant at low: <code>I(n, 0) &lt;=&gt; n = 0 + n</code></p></li>
+<li><p>The <code>f</code> inductively presernes the invariant: <code>if (acc =  i + n) then acc + 1 = (i+1) + n</code></p></li>
+</ul>
+So, the result satisfies the desired predicate:
+<pre><span class=hs-linenum>68: </span><span class='hs-definition'>add</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>n</span><span class='hs-conop'>:</span><span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>m</span><span class='hs-conop'>:</span><span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>{</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span><span class='hs-conid'>Int</span><span class='hs-keyglyph'>|</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>m</span> <span class='hs-varop'>+</span> <span class='hs-varid'>n</span><span class='hs-layout'>}</span>
+</pre>
+
+<h2 id="structural-induction">Structural Induction</h2>
+<p>We define a <code>efoldr</code> funtion that resembles loop.</p>
+<pre><span class=hs-linenum>76: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>efoldr</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Prop</span><span class='hs-varop'>&gt;.</span> 
+<span class=hs-linenum>77: </span>                <span class='hs-layout'>(</span><span class='hs-varid'>xs</span><span class='hs-conop'>:</span><span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>x</span><span class='hs-conop'>:</span><span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-varid'>xs</span><span class='hs-varop'>&gt;</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-layout'>(</span><span class='hs-conid'>C</span> <span class='hs-varid'>x</span> <span class='hs-varid'>xs</span><span class='hs-layout'>)</span><span class='hs-varop'>&gt;</span><span class='hs-layout'>)</span> 
+<span class=hs-linenum>78: </span>              <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-conid'>N</span><span class='hs-varop'>&gt;</span> 
+<span class=hs-linenum>79: </span>              <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>ys</span><span class='hs-conop'>:</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>80: </span>              <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-varid'>ys</span><span class='hs-varop'>&gt;</span>
+<span class=hs-linenum>81: </span>  <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>82: </span><span class='hs-definition'>efoldr</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span>
+<span class=hs-linenum>83: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: (SimpleRefinements.L a)-&gt; b-&gt; Bool&gt;.
+(xs:(SimpleRefinements.L a)
+ -&gt; x:a
+ -&gt; {VV : b&lt;p xs&gt; | true}
+ -&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : b&lt;p ex&gt; | true})
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : b&lt;p ex&gt; | true}
+-&gt; ys:(SimpleRefinements.L a)
+-&gt; {VV : b&lt;p ys&gt; | true}</span><span class='hs-definition'>efoldr</span></a> <a class=annot href="#"><span class=annottext>xs:(SimpleRefinements.L a)
+-&gt; x:a
+-&gt; {VV : b | ((papp2 p VV xs))}
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : b | ((papp2 p VV ex))}</span><span class='hs-varid'>op</span></a> <a class=annot href="#"><span class=annottext>forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : a | ((papp2 p VV ex))}</span><span class='hs-varid'>b</span></a> <span class='hs-conid'>N</span>        <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : a | ((papp2 p VV ex))}</span><span class='hs-varid'>b</span></a>
+<span class=hs-linenum>84: </span><span class='hs-definition'>efoldr</span> <span class='hs-varid'>op</span> <span class='hs-varid'>b</span> <span class='hs-layout'>(</span><span class='hs-conid'>C</span> <span class='hs-varid'>x</span> <span class='hs-varid'>xs</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>xs:(SimpleRefinements.L a)
+-&gt; x:a
+-&gt; {VV : b | ((papp2 p VV xs))}
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : b | ((papp2 p VV ex))}</span><span class='hs-varid'>op</span></a> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L a) | (VV == xs)}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>{VV : a | (VV == x)}</span><span class='hs-varid'>x</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>forall &lt;p :: (SimpleRefinements.L a)-&gt; b-&gt; Bool&gt;.
+(xs:(SimpleRefinements.L a)
+ -&gt; x:a
+ -&gt; {VV : b&lt;p xs&gt; | true}
+ -&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : b&lt;p ex&gt; | true})
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : b&lt;p ex&gt; | true}
+-&gt; ys:(SimpleRefinements.L a)
+-&gt; {VV : b&lt;p ys&gt; | true}</span><span class='hs-varid'>efoldr</span></a> <a class=annot href="#"><span class=annottext>xs:(SimpleRefinements.L a)
+-&gt; x:a
+-&gt; {VV : b | ((papp2 p VV xs))}
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : b | ((papp2 p VV ex))}</span><span class='hs-varid'>op</span></a> <a class=annot href="#"><span class=annottext>forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : a | ((papp2 p VV ex))}</span><span class='hs-varid'>b</span></a> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L a) | (VV == xs)}</span><span class='hs-varid'>xs</span></a><span class='hs-layout'>)</span>
+</pre>
+ 
+<p>In the <code>size</code> function we have an invariant: <code>I(xs, acc) &lt;=&gt; acc = llen xs</code></p>
+<pre><span class=hs-linenum>90: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>size</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>xs</span><span class='hs-conop'>:</span><span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{v:</span> <span class='hs-conid'>Int</span> <span class='hs-keyword'>| v = llen(xs)}</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>91: </span><span class='hs-definition'>size</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>92: </span><a class=annot href="#"><span class=annottext>forall a.
+xs:(SimpleRefinements.L a)
+-&gt; {VV : (GHC.Types.Int) | (VV == (llen xs))}</span><span class='hs-definition'>size</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall &lt;p :: (SimpleRefinements.L a)-&gt; (GHC.Types.Int)-&gt; Bool&gt;.
+(xs:(SimpleRefinements.L a)
+ -&gt; x:a
+ -&gt; {VV : (GHC.Types.Int)&lt;p xs&gt; | (VV &gt;= 0)}
+ -&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : (GHC.Types.Int)&lt;p ex&gt; | (VV &gt;= 0)})
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : (GHC.Types.Int)&lt;p ex&gt; | (VV &gt;= 0)}
+-&gt; ys:(SimpleRefinements.L a)
+-&gt; {VV : (GHC.Types.Int)&lt;p ys&gt; | (VV &gt;= 0)}</span><span class='hs-varid'>efoldr</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>x1:(SimpleRefinements.L a)
+-&gt; a
+-&gt; n:{VV : (GHC.Types.Int) | (VV == (llen x1)) &amp;&amp; (VV &gt;= 0)}
+-&gt; {VV : (GHC.Types.Int) | (VV == (n + 1)) &amp;&amp; (VV &gt; 0) &amp;&amp; (VV &gt; n) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-keyglyph'>\</span></a><span class='hs-keyword'>_</span> <span class='hs-keyword'>_</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-varid'>n</span></a> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == n) &amp;&amp; (VV &gt;= 0)}</span><span class='hs-varid'>n</span></a> <a class=annot href="#"><span class=annottext>x:(GHC.Types.Int)
+-&gt; y:(GHC.Types.Int) -&gt; {VV : (GHC.Types.Int) | (VV == (x + y))}</span><span class='hs-varop'>+</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (1  :  int))}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (0  :  int))}</span><span class='hs-num'>0</span></a>
+</pre>
+
+<p>In the <code>++</code> function, we have the invariant <code>I(xs, acc) &lt;=&gt; llen acc = llen acc + llen ys</code>:</p>
+<pre><span class=hs-linenum>98: </span> <span class='hs-keyword'>{-@</span> <span class='hs-varop'>++</span>  <span class='hs-keyglyph'>::</span> <span class='hs-varid'>xs</span><span class='hs-conop'>:</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span> 
+<span class=hs-linenum>99: </span>         <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>ys</span><span class='hs-conop'>:</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span> 
+<span class=hs-linenum>100: </span>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{v:</span> <span class='hs-conid'>L</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| (llen(v) = llen(xs) + llen(ys))}</span> 
+<span class=hs-linenum>101: </span> <span class='hs-keyword'>@-}</span> 
+<span class=hs-linenum>102: </span><a class=annot href="#"><span class=annottext>(SimpleRefinements.L a)</span><span class='hs-definition'>xs</span></a> <a class=annot href="#"><span class=annottext>forall a.
+xs:(SimpleRefinements.L a)
+-&gt; ys:(SimpleRefinements.L a)
+-&gt; {VV : (SimpleRefinements.L a) | ((llen VV) == ((llen xs) + (llen ys)))}</span><span class='hs-varop'>++</span></a> <a class=annot href="#"><span class=annottext>(SimpleRefinements.L a)</span><span class='hs-varid'>ys</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall &lt;p :: (SimpleRefinements.L a)-&gt; (SimpleRefinements.L a)-&gt; Bool&gt;.
+(xs:(SimpleRefinements.L a)
+ -&gt; x:a
+ -&gt; {VV : (SimpleRefinements.L a)&lt;p xs&gt; | true}
+ -&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (C x xs))}].{VV : (SimpleRefinements.L a)&lt;p ex&gt; | true})
+-&gt; forall [ex:{VV : (SimpleRefinements.L a) | (VV == (N))}].{VV : (SimpleRefinements.L a)&lt;p ex&gt; | true}
+-&gt; ys:(SimpleRefinements.L a)
+-&gt; {VV : (SimpleRefinements.L a)&lt;p ys&gt; | true}</span><span class='hs-varid'>efoldr</span></a> <span class='hs-layout'>(</span><a class=annot href="#"><span class=annottext>x1:(SimpleRefinements.L a)
+-&gt; a
+-&gt; zs:{VV : (SimpleRefinements.L a) | ((llen VV) == ((llen x1) + (llen ys))) &amp;&amp; ((llen VV) == ((llen ys) + (llen x1)))}
+-&gt; {VV : (SimpleRefinements.L a) | ((llen VV) == (1 + (llen zs)))}</span><span class='hs-keyglyph'>\</span></a><span class='hs-keyword'>_</span> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>z</span></a> <a class=annot href="#"><span class=annottext>(SimpleRefinements.L a)</span><span class='hs-varid'>zs</span></a> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>a
+-&gt; xs:(SimpleRefinements.L a)
+-&gt; {VV : (SimpleRefinements.L a) | ((llen VV) == (1 + (llen xs)))}</span><span class='hs-conid'>C</span></a> <a class=annot href="#"><span class=annottext>{VV : a | (VV == z)}</span><span class='hs-varid'>z</span></a> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L a) | (VV == zs)}</span><span class='hs-varid'>zs</span></a><span class='hs-layout'>)</span> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L a) | (VV == ys)}</span><span class='hs-varid'>ys</span></a> <a class=annot href="#"><span class=annottext>{VV : (SimpleRefinements.L a) | (VV == xs)}</span><span class='hs-varid'>xs</span></a> 
+</pre>
+
+
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>

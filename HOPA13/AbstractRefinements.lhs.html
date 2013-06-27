@@ -1,0 +1,71 @@
+<pre><span class=hs-linenum>2: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>AbstractRefinements</span> <span class='hs-keyword'>where</span>
+</pre>
+
+<h1 id="abstract-refinements">Abstract Refinements</h1>
+<p>Consider the following monomorphic <code>max</code> function on <code>Int</code> values:</p>
+<pre><span class=hs-linenum>11: </span><span class='hs-definition'>maxInt</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> 
+<span class=hs-linenum>12: </span><a class=annot href="#"><span class=annottext>forall &lt;p :: (GHC.Types.Int)-&gt; Bool&gt;.
+{VV : (GHC.Types.Int)&lt;p&gt; | true}
+-&gt; {VV : (GHC.Types.Int)&lt;p&gt; | true}
+-&gt; {VV : (GHC.Types.Int)&lt;p&gt; | true}</span><span class='hs-definition'>maxInt</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((papp1 p VV))}</span><span class='hs-varid'>x</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((papp1 p VV))}</span><span class='hs-varid'>y</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>if</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((papp1 p VV)) &amp;&amp; (VV == x)}</span><span class='hs-varid'>x</span></a> <a class=annot href="#"><span class=annottext>x:{VV : (GHC.Types.Int) | ((papp1 p VV))}
+-&gt; y:{VV : (GHC.Types.Int) | ((papp1 p VV))}
+-&gt; {VV : (GHC.Types.Bool) | (((Prop VV)) &lt;=&gt; (x &lt;= y))}</span><span class='hs-varop'>&lt;=</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((papp1 p VV)) &amp;&amp; (VV == y)}</span><span class='hs-varid'>y</span></a> <span class='hs-keyword'>then</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((papp1 p VV)) &amp;&amp; (VV == y)}</span><span class='hs-varid'>y</span></a> <span class='hs-keyword'>else</span> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | ((papp1 p VV)) &amp;&amp; (VV == x)}</span><span class='hs-varid'>x</span></a> 
+</pre>
+
+We could give <code>maxInt</code> many, quite different and incomparable refinement types like
+<pre><span class=hs-linenum>16: </span><span class='hs-definition'>maxInt</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span>
+</pre>
+
+or
+<pre><span class=hs-linenum>20: </span><span class='hs-definition'>maxInt</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Even</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Even</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Even</span>
+</pre>
+
+or even
+<pre><span class=hs-linenum>24: </span><span class='hs-definition'>maxInt</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>{</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>|</span> <span class='hs-layout'>(</span><span class='hs-varid'>prime</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>{</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>|</span> <span class='hs-layout'>(</span><span class='hs-varid'>prime</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>{</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>|</span> <span class='hs-layout'>(</span><span class='hs-varid'>prime</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span><span class='hs-layout'>}</span>
+</pre>
+
+<h2 id="defining-parametric-invariants">Defining Parametric Invariants</h2>
+<p><code>maxInt</code> returns <em>one of</em> its two arguments <code>x</code> and <code>y</code>.</p>
+<p>This means that if <em>both</em> arguments satisfy some property then the output <em>must</em> satisfy that property, <em>regardless of what that property was!</em></p>
+<p>We introduce the idea of <strong>abstracting over refinements</strong> or, parameterizing a type over its refinements.</p>
+<p>We type <code>maxInt</code> as</p>
+<pre><span class=hs-linenum>41: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>maxInt</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Prop</span><span class='hs-varop'>&gt;.</span> <span class='hs-conid'>Int</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span> <span class='hs-keyword'>@-}</span>
+</pre>
+where
+<center>
+<code>Int&lt;p&gt; = {v:Int | (p v)}</code>
+</center>
+
+
+<p>Here, the definition says explicitly: <em>for any property</em> <code>p</code> that is a property of <code>Int</code>, the function takes two inputs each of which satisfy <code>p</code> and returns an output that satisfies <code>p</code>.</p>
+<p>We encode abstract refinements <code>p</code> as <em>uninterpreted function symbols</em> in the refinement logic. These are special symbols which which satisfy only the <em>congruence axiom</em>.</p>
+<center>
+forall X, Y. X = Y =&gt; p(X) = p(Y)
+</center>
+
+<h2 id="using-abstract-refinements">Using Abstract Refinements</h2>
+<p>With this, if we call <code>maxInt</code> if we call it with two <code>Int</code>s that have the same refinement, the abstract refinement <code>p</code> will be instantiated with this concrete refinement.</p>
+<p>So, the abstract refinement, can be instantiated with <code>v &gt;= 0</code> to return <code>Nat</code>:</p>
+<pre><span class=hs-linenum>67: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>maxNat</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Nat</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>68: </span><span class='hs-definition'>maxNat</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>69: </span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &gt;= 0)}</span><span class='hs-definition'>maxNat</span></a>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall &lt;p :: (GHC.Types.Int)-&gt; Bool&gt;.
+{VV : (GHC.Types.Int)&lt;p&gt; | true}
+-&gt; {VV : (GHC.Types.Int)&lt;p&gt; | true}
+-&gt; {VV : (GHC.Types.Int)&lt;p&gt; | true}</span><span class='hs-varid'>maxInt</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (2  :  int))}</span><span class='hs-num'>2</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (5  :  int))}</span><span class='hs-num'>5</span></a>
+</pre>
+
+<p>Or any arbitrary property:</p>
+<pre><span class=hs-linenum>74: </span><span class='hs-keyword'>{-@</span> <span class='hs-keyword'>type</span> <span class='hs-conid'>RGB</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>{</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>|</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-num'>0</span> <span class='hs-varop'>&lt;=</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-varop'>&amp;&amp;</span> <span class='hs-layout'>(</span><span class='hs-varid'>v</span> <span class='hs-varop'>&lt;</span> <span class='hs-num'>256</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-layout'>}</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>75: </span>
+<span class=hs-linenum>76: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>maxRGB</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>RGB</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>77: </span><span class='hs-definition'>maxRGB</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum>78: </span><a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV &lt; 256) &amp;&amp; (0 &lt;= VV)}</span><span class='hs-definition'>maxRGB</span></a>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall &lt;p :: (GHC.Types.Int)-&gt; Bool&gt;.
+{VV : (GHC.Types.Int)&lt;p&gt; | true}
+-&gt; {VV : (GHC.Types.Int)&lt;p&gt; | true}
+-&gt; {VV : (GHC.Types.Int)&lt;p&gt; | true}</span><span class='hs-varid'>maxInt</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (56  :  int))}</span><span class='hs-num'>56</span></a> <a class=annot href="#"><span class=annottext>{VV : (GHC.Types.Int) | (VV == (8  :  int))}</span><span class='hs-num'>8</span></a>
+</pre>
+
+
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>
